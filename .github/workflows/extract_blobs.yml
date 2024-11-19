@@ -77,7 +77,7 @@ jobs:
         run: |
           process_commit() {
             commit_hash=$1
-            bash extract-files.sh -s "Camera (postproc)" ${{ github.workspace }}/dump/proprietary && bash extract-files.sh -s "MIUI" ${{ github.workspace }}/dumpstock && bash extract-files.sh ${{ github.workspace }}/dump/proprietary
+            bash extract-files.sh -s "Camera (postproc)" ${{ github.workspace }}/dump/proprietary && bash extract-files.sh -k -s "MIUI" ${{ github.workspace }}/dumpstock && bash extract-files.sh ${{ github.workspace }}/dump/proprietary
             cd ${{ github.workspace }}/vendor/xiaomi/apollo
             if [ -n "$(git status --porcelain)" ]; then
               commit_message=$(cd ${{ github.workspace }}/device/xiaomi/apollo && git log -1 --format=%B $commit_hash)
