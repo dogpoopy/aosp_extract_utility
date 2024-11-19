@@ -57,9 +57,9 @@ jobs:
 
       - name: Clone Device, Vendor, and Dump
         run: |
-          git clone https://github.com/aosp-realm/android_device_xiaomi_apollo -b ${{ github.event.inputs.DEVICE_BRANCH }} device/xiaomi/apollo
-          git clone https://github.com/aosp-realm/android_vendor_xiaomi_apollo -b ${{ github.event.inputs.VENDOR_BRANCH }} vendor/xiaomi/apollo
-          git clone --depth 1 --single-branch https://gitlab.com/dogpoopy/apollo_dump_V14.0.4.0.SJDMIXM.git dump
+          git clone https://github.com/aosp-realm/device_xiaomi_apollo -b ${{ github.event.inputs.DEVICE_BRANCH }} device/xiaomi/apollo
+          git clone https://github.com/aosp-realm/vendor_xiaomi_apollo -b ${{ github.event.inputs.VENDOR_BRANCH }} vendor/xiaomi/apollo
+          git clone --depth 1 --single-branch https://github.com/aosp-realm/vendor_xiaomi_apollo.git dump
           
       - name: Set Commit Range Starting from User-Specified Commit
         id: set_commit_range
@@ -76,7 +76,8 @@ jobs:
         run: |
           process_commit() {
             commit_hash=$1
-            bash extract-files.sh ${{ github.workspace }}/dump
+            export TARGET_ENABLE_CHECKELF=false
+            bash extract-files.sh ${{ github.workspace }}/dump/proprietary
             cd ${{ github.workspace }}/vendor/xiaomi/apollo
             if [ -n "$(git status --porcelain)" ]; then
               commit_message=$(cd ${{ github.workspace }}/device/xiaomi/apollo && git log -1 --format=%B $commit_hash)
@@ -100,4 +101,4 @@ jobs:
       - name: Push Vendor Changes
         run: |
           cd vendor/xiaomi/apollo
-          git push "https://x-access-token:${{ secrets.PAT }}@github.com/aosp-realm/android_vendor_xiaomi_apollo.git" ${{ github.event.inputs.VENDOR_BRANCH }}
+          git push "https://x-access-token:${{ secrets.PAT }}@github.com/aosp-realm/vendor_xiaomi_apollo.git" ${{ github.event.inputs.VENDOR_BRANCH }}
